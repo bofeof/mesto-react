@@ -2,7 +2,7 @@ import Header from '../components/Header';
 import Main from '../components/Main';
 import Footer from '../components/Footer';
 
-import {API} from '../utils/API';
+import {API} from '../utils/API.js';
 import {configAPI, userId} from '../utils/constants.js'
 
 import { useEffect, useState } from 'react';
@@ -51,8 +51,8 @@ export default function App() {
     /**  get current user info, cards from server */
     useEffect(()=>{
 
-        Promise.all([api.getUserData(), api.getGalleryData()])
-        .then(([userData, cardsData]) => {
+        Promise.all([api.getGalleryData()])
+        .then(([cardsData]) => {
 
             // user
             // user.setUserInfo({ name: userData.name, about: userData.about });
