@@ -2,6 +2,11 @@
   "name": "mesto-react",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bofeof/mesto-react.git"
+  },
+  "homepage": "http://bofeof.github.io/mesto-react",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -19,8 +24,6 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-
-  
   "eslintConfig": {
     "extends": [
       "react-app",
