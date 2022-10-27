@@ -2,99 +2,184 @@ import Header from '../components/Header';
 import Main from '../components/Main';
 import Footer from '../components/Footer';
 
-import {API} from '../utils/API.js';
-import {configAPI, userId} from '../utils/constants.js'
+import ImagePopup from '../components/ImagePopup';
+import PopupWithForm from '../components/PopupWithForm';
+import PopupConfirm from '../components/PopupConfirm';
+
+import { API } from '../utils/API.js';
+import { configAPI } from '../utils/constants.js';
 
 import { useEffect, useState } from 'react';
 
-
 export default function App() {
+  const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
+  const [isCardZoomPopupOpen, setCardZoomPopupOpen] = useState(false);
+  const [isConfirmPopupOpen, setConfirmPopupOpen] = useState(false);
 
-    const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
-    const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
-    const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
-    const [isCardZoonPopupOpen, setCardZoomPopupOpen] = useState(false);
+  const [cards, setCards] = useState([]);
+  const [selectedCard, setSelectedCard] = useState({});
 
-    const [cards, getCards] = useState([]);
-    const [selectedCard, setSelectedCard] = useState();
+  const [user, setUser] = useState({});
 
-    const api = new API(configAPI);
+  const api = new API(configAPI);
 
-    function handleEditProfileClick() {
-        setEditProfilePopupOpen(true);
-    }
+  function handleEditProfileClick() {
+    setEditProfilePopupOpen(true);
+  }
 
-    function handleEditAvatarClick() {
-        setEditAvatarPopupOpen(true);
-    }
+  function handleEditAvatarClick() {
+    setEditAvatarPopupOpen(true);
+  }
 
-    function handleAddPlaceClick() {
-        setAddPlacePopupOpen(true);
-    }
+  function handleAddPlaceClick() {
+    setAddPlacePopupOpen(true);
+  }
 
-    function handleCardClick(card){
-        setSelectedCard(card);
-        setCardZoomPopupOpen(true);
-    }
-    
+  function handleCardClick(card) {
+    setSelectedCard(card);
+    setCardZoomPopupOpen(true);
+  }
 
-    function closeAllPopups(){
-        setEditProfilePopupOpen(false);
-        setEditAvatarPopupOpen(false);
-        setAddPlacePopupOpen(false);
+  function closeAllPopups() {
+    setEditProfilePopupOpen(false);
+    setEditAvatarPopupOpen(false);
+    setAddPlacePopupOpen(false);
+    setConfirmPopupOpen(false);
 
-        setCardZoomPopupOpen(false);
-        setSelectedCard();
-    }
+    setCardZoomPopupOpen(false);
+    setSelectedCard({});
+  }
 
+  useEffect(() => {
+    Promise.all([api.getGalleryData(), api.getUserData()])
+      .then(([cardsData, userData]) => {
+        // user
+        setUser(userData);
 
-    /**  get current user info, cards from server */
-    useEffect(()=>{
+        // cards
+        setCards(cardsData);
+      })
+      .catch((err) => console.log(`Ошибка: ${err}`));
+  }, []);
 
-        Promise.all([api.getGalleryData()])
-        .then(([cardsData]) => {
+  return (
+    <div className="page page-content">
+      <Header />
 
-            // user
-            // user.setUserInfo({ name: userData.name, about: userData.about });
-            // user.setUserAvatar({ avatar: userData.avatar });
-            
-            // cards
-            getCards(...[], cardsData);
+      <Main
+        onEditProfile={handleEditProfileClick}
+        onAddPlace={handleAddPlaceClick}
+        onEditAvatar={handleEditAvatarClick}
+        onCardClick={handleCardClick}
+        onClose={closeAllPopups}
+        /** gallery data from server */
+        cards={cards}
+        /** card for zoom */
+        card={selectedCard}
+        user={user}
+      />
 
-        })
-        .catch((err) => console.log(`Ошибка: ${err}`));
+      {/* Popups */}
+      {/* edit user */}
+      <PopupWithForm
+        name="edit-user"
+        title="Редактировать профиль"
+        buttonSubmitName="Сохранить"
+        isOpen={isEditProfilePopupOpen}
+        onClose={closeAllPopups}
+      >
+        {/* inputs */}
+        <>
+          <input
+            className="popup__input popup__input_form_name"
+            type="text"
+            name="name"
+            id="username-input"
+            placeholder="Имя"
+            minLength="2"
+            maxLength="40"
+            required="required"
+          />
+          <span className="popup__input-error username-input-error"></span>
 
-    
-    }, [])
+          <input
+            className="popup__input popup__input_form_job"
+            type="text"
+            name="about"
+            id="jobinfo-input"
+            placeholder="О себе"
+            minLength="2"
+            maxLength="200"
+            required="required"
+          />
+          <span className="popup__input-error jobinfo-input-error"></span>
+        </>
+      </PopupWithForm>
 
-    return (
-        <div className="page page-content">
-            <Header />
+      {/* change avatar */}
+      <PopupWithForm
+        name="change-avatar"
+        title="Обновить аватар"
+        buttonSubmitName="Сохранить"
+        isOpen={isEditAvatarPopupOpen}
+        onClose={closeAllPopups}
+      >
+        <>
+          <input
+            className="popup__input popup__input_form_avatar"
+            type="url"
+            name="avatar"
+            placeholder="Ссылка на аватар"
+            id="url-input-avatar"
+            required="required"
+          />
 
-            <Main
+          <span className="popup__input-error url-input-avatar-error"></span>
+        </>
+      </PopupWithForm>
 
-                onEditProfile = {handleEditProfileClick}
-                onAddPlace = {handleAddPlaceClick}
-                onEditAvatar = {handleEditAvatarClick}
-                onCardClick = {handleCardClick}
+      {/*  create photocard */}
+      <PopupWithForm
+        name="create-card"
+        title="Новое место"
+        buttonSubmitName="Сохранить"
+        isOpen={isAddPlacePopupOpen}
+        onClose={closeAllPopups}
+      >
+        <>
+          <input
+            className="popup__input popup__input_form_photoname"
+            type="text"
+            name="name"
+            id="photoname-input"
+            placeholder="Название"
+            minLength="2"
+            maxLength="30"
+            required="required"
+          />
+          <span className="popup__input-error photoname-input-error"></span>
 
-                isEditProfilePopupOpen = {isEditProfilePopupOpen}
-                isAddPlacePopupOpen = {isAddPlacePopupOpen}
-                isEditAvatarPopupOpen = {isEditAvatarPopupOpen}
-                isCardZoonPopupOpen = {isCardZoonPopupOpen}
+          <input
+            className="popup__input popup__input_form_photolink"
+            type="url"
+            name="link"
+            placeholder="Ссылка на картинку"
+            id="url-input"
+            required="required"
+          />
+          <span className="popup__input-error url-input-error"></span>
+        </>
+      </PopupWithForm>
 
-                onClose = {closeAllPopups}
+      {/* open img card */}
+      <ImagePopup card={selectedCard} isOpen={isCardZoomPopupOpen} onClose={closeAllPopups} />
 
-                /** gallery data from server */ 
-                cards = {cards}
+      {/* remove data/confirmation */}
+      <PopupConfirm title="Вы уверены?" buttonSubmitName="Да" isOpen={isConfirmPopupOpen} onClose={closeAllPopups} />
 
-                /** card for zoom */ 
-                card = {selectedCard}
-
-            />
-
-            <Footer />
-
-        </div>
-    );
+      <Footer />
+    </div>
+  );
 }

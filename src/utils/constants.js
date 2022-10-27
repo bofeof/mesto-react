@@ -6,6 +6,5 @@ const configAPI = {
     }
   }
 
-const userId = 'c0fe93bd02816e72b575c7ab'
 
-export {configAPI, userId};
+export {configAPI};
