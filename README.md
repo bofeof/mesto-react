@@ -1,13 +1,13 @@
 
 # ✨ Mesto ✨
-___
+
 [Mesto](https://bofeof.github.io/mesto-react/) is a type of Instagram prototype. This project is developed to practice programming skills: Adaptive design, ES6, OOP, DOM, API, Promises, Webpack, React.
 
 Click this [link](https://bofeof.github.io/mesto-react/) to check it out.
 
 
 ## Available functionality runs through the server:
- ___
+ 
 * Working with popups to change user avatar, name and bio sections;
 * Create new photocards;
 * Zoom photocards;
@@ -15,14 +15,14 @@ Click this [link](https://bofeof.github.io/mesto-react/) to check it out.
 * Remove cards.
 
 ## Technologies:
----
+
 * HTML
 * CSS
 * JS + React
 * Webpack
 
 ## How to install and run
-___
+
 If you don't want to clone repo just click [Mesto](https://bofeof.github.io/mesto-react/) or after cloning repo you can run:
 
 ### `npm start`
