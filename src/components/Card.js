@@ -4,7 +4,7 @@ export default function Card({ card, onCardClick }) {
     }
   
     return (
-      <>
+      <li className="gallery__item" >
         <button type="button" className="gallery__remove-button"></button>
         <img className="gallery__item-photo" src={card.link} alt={card.name} onClick={handleZoomClick} />
         <div className="gallery__item-description">
@@ -14,7 +14,7 @@ export default function Card({ card, onCardClick }) {
             <div className="gallery__like-counter">{card.likes.length}</div>
           </div>
         </div>
-      </>
+      </li>
     );
   }
   

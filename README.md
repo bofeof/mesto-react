@@ -11,7 +11,7 @@ Click this [link](https://bofeof.github.io/mesto-react/) to check it out.
 * Working with popups to change user avatar, name and bio sections;
 * Create new photocards;
 * Zoom photocards;
-* Set likes;
+* Toggle like;
 * Remove cards.
 
 ## Technologies:
@@ -30,8 +30,7 @@ Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ### `npm test`
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in the interactive watch mode.
 
 ### `npm run build`
-Builds the app for production to the `build` folder.\
+Builds the app for production to the `build` folder.
