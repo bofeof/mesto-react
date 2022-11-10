@@ -72,7 +72,11 @@ export class API {
     }).then((res) => this._getResponse(res));
   }
 
-  addPhotoLike(photoCardId) {
+  changeLikeCardStatus(photoCardId, isLiked){
+    return isLiked ? this._removePhotoLike(photoCardId) : this._addPhotoLike(photoCardId)
+  }
+
+  _addPhotoLike(photoCardId) {
     return fetch(`${this._configAPI.mestoUrl}/cards/${photoCardId}/likes`, {
       method: 'PUT',
       headers: this._configAPI.headers,
