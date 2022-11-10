@@ -6,17 +6,17 @@ export default function PopupWithForm(props) {
           <div className="popup__form">
             <h3 className="popup__form-header">{props.title}</h3>
   
-            <form name={`${props.name}`} className="popup__form-inputs" noValidate>
+            <form name={`${props.name}`} className="popup__form-inputs" noValidate onSubmit={props.onSubmit}>
               
               {/* inputs area */}
               {props.children}
 
+              <button className="popup__button popup__submit-button popup__save-button" type="submit" name="save">
+                {props.buttonSubmitName}
+              </button>
+              
             </form>
   
-            <button className="popup__button popup__submit-button popup__save-button" type="submit" name="save">
-              {props.buttonSubmitName}
-            </button>
-            
           </div>
         </div>
       </div>

@@ -6,6 +6,8 @@ import ImagePopup from '../components/ImagePopup';
 import PopupWithForm from '../components/PopupWithForm';
 import PopupConfirm from '../components/PopupConfirm';
 
+import EditProfilePopup from '../components/EditProfilePopup'
+
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
 
 import { API } from '../utils/API.js';
@@ -24,9 +26,20 @@ export default function App() {
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState({});
 
-  const [currentUser, setcurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState({});
 
   const api = new API(configAPI);
+
+// first run
+  useEffect(() => {
+    Promise.all([api.getGalleryData(), api.getUserData()])
+      .then(([cardsData, userData]) => {
+        setCurrentUser(userData);
+        setCards(cardsData);
+      })
+      .catch((err) => console.log(`Ошибка: ${err}`));
+  }, []);
+
 
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
@@ -56,9 +69,19 @@ export default function App() {
   } 
 
   function handleCardDelete(card){
-    api.removePhotoLike(card._id)
+    api.removePhotoCard(card._id)
     .then(() => {
       setCards((prevGallery) => prevGallery.filter((prevCard) => prevCard._id !== card._id))
+    })
+    .catch((err) => console.log(`Ошибка: ${err}`));
+  }
+
+  function handleUserSubmit(userData){
+
+    api.setUserData(userData)
+    .then((userData)=>{
+      setCurrentUser(userData);
+      closeAllPopups();
     })
     .catch((err) => console.log(`Ошибка: ${err}`));
   }
@@ -68,22 +91,9 @@ export default function App() {
     setEditAvatarPopupOpen(false);
     setAddPlacePopupOpen(false);
     setConfirmPopupOpen(false);
-
     setCardZoomPopupOpen(false);
     setSelectedCard({});
   }
-
-  useEffect(() => {
-    Promise.all([api.getGalleryData(), api.getUserData()])
-      .then(([cardsData, userData]) => {
-        // user
-        setcurrentUser(userData);
-
-        // cards
-        setCards(cardsData);
-      })
-      .catch((err) => console.log(`Ошибка: ${err}`));
-  }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -103,45 +113,13 @@ export default function App() {
             cards={cards}
             /** card for zoom */
             card={selectedCard}
-            api={api}
           />
 
           {/* Popups */}
           {/* edit user */}
-          <PopupWithForm
-            name="edit-user"
-            title="Редактировать профиль"
-            buttonSubmitName="Сохранить"
-            isOpen={isEditProfilePopupOpen}
-            onClose={closeAllPopups}
-          >
-            {/* inputs */}
-            <>
-              <input
-                className="popup__input popup__input_form_name"
-                type="text"
-                name="name"
-                id="username-input"
-                placeholder="Имя"
-                minLength="2"
-                maxLength="40"
-                required="required"
-              />
-              <span className="popup__input-error username-input-error"></span>
+          <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onSubmit={handleUserSubmit}/>
 
-              <input
-                className="popup__input popup__input_form_job"
-                type="text"
-                name="about"
-                id="jobinfo-input"
-                placeholder="О себе"
-                minLength="2"
-                maxLength="200"
-                required="required"
-              />
-              <span className="popup__input-error jobinfo-input-error"></span>
-            </>
-          </PopupWithForm>
+        
 
           {/* change avatar */}
           <PopupWithForm
