@@ -11,7 +11,7 @@ export default function EditProfilePopup({ isOpen, onClose, onSubmit, buttonSubm
   useEffect(() => {
     setName(currentUser.name);
     setDescription(currentUser.about);
-  }, [isOpen, currentUser]);
+  }, [isOpen]);
 
   function handleUserChange(evt) {
     const value = evt.target.value;

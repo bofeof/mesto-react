@@ -8,7 +8,7 @@ export default function EditAvatarPopup({ isOpen, onClose, onSubmit, buttonSubmi
 
   useEffect(() => {
     avatarRef.current.value = currentUser.avatar;
-  }, [isOpen, currentUser]);
+  }, [isOpen]);
 
   function handleAvatarSubmit(evt) {
     evt.preventDefault();

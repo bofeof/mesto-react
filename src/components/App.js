@@ -4,7 +4,6 @@ import Footer from '../components/Footer';
 
 import ImagePopup from '../components/ImagePopup';
 import PopupConfirm from '../components/PopupConfirm';
-
 import EditProfilePopup from '../components/EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
@@ -17,6 +16,9 @@ import { configAPI } from '../utils/constants.js';
 import { useEffect, useState } from 'react';
 
 export default function App() {
+
+  const api = new API(configAPI);
+
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
@@ -26,12 +28,12 @@ export default function App() {
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState({});
 
-  // buttons
-  const [btnTextAvatarSubmit, setBtnTextAvatarSubmit] = useState('Сохранить')
-  const [btnTextUserSubmit, setBtnTextUserSubmit] = useState('Сохранить')
-  const [btnTextCardSubmit, setBtnTextCardSubmit] = useState('Создать')
+  const [btnTextAvatarSubmit, setBtnTextAvatarSubmit] = useState('Сохранить');
+  const [btnTextUserSubmit, setBtnTextUserSubmit] = useState('Сохранить');
+  const [btnTextCardSubmit, setBtnTextCardSubmit] = useState('Создать');
+  const [btnTextConfirm, setBtnTextConfirm] = useState('Да');
 
-  const api = new API(configAPI);
+  const [cardForRemove, setCardForRemove] = useState({});
 
   // first run: get data about gallery and user
   useEffect(() => {
@@ -70,14 +72,23 @@ export default function App() {
       .catch((err) => console.log(`Ошибка: ${err}`));
   }
 
-  function handleCardDelete(card) {
+  // before removing card
+  function handleAskConfirmationClick(card){
+    setCardForRemove(card)
+    setConfirmPopupOpen(true);
+  }
+
+
+
+  function onCardRemove() {
+    setBtnTextConfirm(()=> 'Удаление...')
     api
-      .removePhotoCard(card._id)
+      .removePhotoCard(cardForRemove._id)
       .then(() => {
-        setCards((prevGallery) => prevGallery.filter((prevCard) => prevCard._id !== card._id));
+        setCards((prevGallery) => prevGallery.filter((prevCard) => prevCard._id !== cardForRemove._id));
       })
       .catch((err) => console.log(`Ошибка: ${err}`))
-      .finally();
+      .finally(() => setBtnTextConfirm(() => 'Да'));
   }
 
   function closeAllPopups() {
@@ -86,12 +97,13 @@ export default function App() {
     setAddPlacePopupOpen(false);
     setConfirmPopupOpen(false);
     setCardZoomPopupOpen(false);
+
     setSelectedCard({});
+    setCardForRemove({})
   }
 
 
   function onUserUpdate(userData) {
-    // setBtnTextUserSubmit((с) =>'Сохранение...');
     setBtnTextUserSubmit(()=> 'Сохранение...');
     api
       .setUserData(userData)
@@ -135,7 +147,9 @@ export default function App() {
             onEditAvatar={handleEditAvatarClick}
             onCardClick={handleCardClick}
             onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
+
+            onCardDelete={handleAskConfirmationClick}
+
             onClose={closeAllPopups}
             cards={cards}
             card={selectedCard}
@@ -149,8 +163,7 @@ export default function App() {
 
           <ImagePopup card={selectedCard} isOpen={isCardZoomPopupOpen} onClose={closeAllPopups} />
 
-          {/* remove data/confirmation */}
-          <PopupConfirm title="Вы уверены?" buttonSubmitName="Да" isOpen={isConfirmPopupOpen} onClose={closeAllPopups} />
+          <PopupConfirm title="Вы уверены?" buttonConfirmName={btnTextConfirm} isOpen={isConfirmPopupOpen} onClose={closeAllPopups} onConfirm={onCardRemove} card={cardForRemove}/>
 
           <Footer />
         </div>
