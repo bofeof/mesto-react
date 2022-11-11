@@ -3,14 +3,13 @@ import Main from '../components/Main';
 import Footer from '../components/Footer';
 
 import ImagePopup from '../components/ImagePopup';
-import PopupWithForm from '../components/PopupWithForm';
 import PopupConfirm from '../components/PopupConfirm';
 
-import EditProfilePopup from '../components/EditProfilePopup'
+import EditProfilePopup from '../components/EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 
-import {CurrentUserContext} from '../contexts/CurrentUserContext';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 import { API } from '../utils/API.js';
 import { configAPI } from '../utils/constants.js';
@@ -18,21 +17,23 @@ import { configAPI } from '../utils/constants.js';
 import { useEffect, useState } from 'react';
 
 export default function App() {
-
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [isCardZoomPopupOpen, setCardZoomPopupOpen] = useState(false);
   const [isConfirmPopupOpen, setConfirmPopupOpen] = useState(false);
-
   const [cards, setCards] = useState([]);
   const [selectedCard, setSelectedCard] = useState({});
-
   const [currentUser, setCurrentUser] = useState({});
+
+  // buttons
+  const [btnTextAvatarSubmit, setBtnTextAvatarSubmit] = useState('Сохранить')
+  const [btnTextUserSubmit, setBtnTextUserSubmit] = useState('Сохранить')
+  const [btnTextCardSubmit, setBtnTextCardSubmit] = useState('Создать')
 
   const api = new API(configAPI);
 
-// first run: get data about gallery and user
+  // first run: get data about gallery and user
   useEffect(() => {
     Promise.all([api.getGalleryData(), api.getUserData()])
       .then(([cardsData, userData]) => {
@@ -41,7 +42,6 @@ export default function App() {
       })
       .catch((err) => console.log(`Ошибка: ${err}`));
   }, []);
-
 
   function handleEditProfileClick() {
     setEditProfilePopupOpen(true);
@@ -61,21 +61,23 @@ export default function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
-    api.changeLikeCardStatus(card._id, isLiked)
-    .then((newCard) => {
-      setCards((prevStateCards) => 
-      prevStateCards.map((c) => c._id === card._id ? newCard : c));
-    })
-    .catch((err) => console.log(`Ошибка: ${err}`));
-  } 
+    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    api
+      .changeLikeCardStatus(card._id, isLiked)
+      .then((newCard) => {
+        setCards((prevStateCards) => prevStateCards.map((c) => (c._id === card._id ? newCard : c)));
+      })
+      .catch((err) => console.log(`Ошибка: ${err}`));
+  }
 
-  function handleCardDelete(card){
-    api.removePhotoCard(card._id)
-    .then(() => {
-      setCards((prevGallery) => prevGallery.filter((prevCard) => prevCard._id !== card._id))
-    })
-    .catch((err) => console.log(`Ошибка: ${err}`));
+  function handleCardDelete(card) {
+    api
+      .removePhotoCard(card._id)
+      .then(() => {
+        setCards((prevGallery) => prevGallery.filter((prevCard) => prevCard._id !== card._id));
+      })
+      .catch((err) => console.log(`Ошибка: ${err}`))
+      .finally();
   }
 
   function closeAllPopups() {
@@ -87,29 +89,38 @@ export default function App() {
     setSelectedCard({});
   }
 
-  function onUserUpdate(userData){
-    api.setUserData(userData)
-    .then((userData)=>{
-      setCurrentUser(userData);
-    })
-    .catch((err) => console.log(`Ошибка: ${err}`));
-  }
 
-  function onAvatarUpdate(avatarLink){
-    api.changeUserAvatar(avatarLink)
-    .then((userData) =>{
-      setCurrentUser(userData);
-    })
-    .catch((err) => console.log(`Ошибка: ${err}`));
-  }
-
-  function onCardCreate(cardData){
-    api.addPhotoCard(cardData)
-    .then((newCard) => {
-      setCards((prevCards)=>{
-        return [newCard, ...prevCards]
+  function onUserUpdate(userData) {
+    // setBtnTextUserSubmit((с) =>'Сохранение...');
+    setBtnTextUserSubmit(()=> 'Сохранение...');
+    api
+      .setUserData(userData)
+      .then((userData) => {
+        setCurrentUser(userData);
       })
+      .catch((err) => console.log(`Ошибка: ${err}`))
+      .finally(() => setBtnTextUserSubmit(()=>'Cохранить'));
+  }
+
+  function onAvatarUpdate(avatarLink) {
+    setBtnTextAvatarSubmit(() => 'Сохранение...');
+    api
+      .changeUserAvatar(avatarLink)
+      .then((userData) => {
+        setCurrentUser(userData);
+      })
+      .catch((err) => console.log(`Ошибка: ${err}`))
+      .finally(() => setBtnTextAvatarSubmit(()=>'Cохранить'));
+  }
+
+  function onCardCreate(cardData) {
+    setBtnTextCardSubmit(()=>{return 'Создание...'});
+    api.addPhotoCard(cardData).then((newCard) => {
+      setCards((prevCards) => {
+        return [newCard, ...prevCards];
+      });
     })
+    .finally(() => setBtnTextCardSubmit(() => 'Создать'));
   }
 
   return (
@@ -123,26 +134,19 @@ export default function App() {
             onAddPlace={handleAddPlaceClick}
             onEditAvatar={handleEditAvatarClick}
             onCardClick={handleCardClick}
-            onCardLike = {handleCardLike}
-            onCardDelete = {handleCardDelete}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
             onClose={closeAllPopups}
-            /** gallery data from server */
             cards={cards}
-            /** card for zoom */
             card={selectedCard}
           />
 
-          {/* Popups */}
-          {/* edit user */}
-          <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onSubmit={onUserUpdate}/>
+          <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onSubmit={onUserUpdate} buttonSubmitName={btnTextUserSubmit} />
 
-          <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onSubmit={onAvatarUpdate}/>
+          <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onSubmit={onAvatarUpdate} buttonSubmitName={btnTextAvatarSubmit} />
 
-          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onSubmit={onCardCreate}/>
+          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onSubmit={onCardCreate} buttonSubmitName={btnTextCardSubmit} />
 
-
-
-          {/* open img card */}
           <ImagePopup card={selectedCard} isOpen={isCardZoomPopupOpen} onClose={closeAllPopups} />
 
           {/* remove data/confirmation */}
