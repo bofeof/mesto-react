@@ -78,8 +78,6 @@ export default function App() {
     setConfirmPopupOpen(true);
   }
 
-
-
   function onCardRemove() {
     setBtnTextConfirm(()=> 'Удаление...')
     api
@@ -101,7 +99,6 @@ export default function App() {
     setSelectedCard({});
     setCardForRemove({})
   }
-
 
   function onUserUpdate(userData) {
     setBtnTextUserSubmit(()=> 'Сохранение...');
