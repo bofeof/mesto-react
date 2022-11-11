@@ -83,7 +83,7 @@ export class API {
     }).then((res) => this._getResponse(res));
   }
 
-  removePhotoLike(photoCardId) {
+  _removePhotoLike(photoCardId) {
     return fetch(`${this._configAPI.mestoUrl}/cards/${photoCardId}/likes`, {
       method: 'DELETE',
       headers: this._configAPI.headers,

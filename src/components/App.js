@@ -7,6 +7,7 @@ import PopupWithForm from '../components/PopupWithForm';
 import PopupConfirm from '../components/PopupConfirm';
 
 import EditProfilePopup from '../components/EditProfilePopup'
+import EditAvatarPopup from './EditAvatarPopup';
 
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
 
@@ -30,7 +31,7 @@ export default function App() {
 
   const api = new API(configAPI);
 
-// first run
+// first run: get data about gallery and user
   useEffect(() => {
     Promise.all([api.getGalleryData(), api.getUserData()])
       .then(([cardsData, userData]) => {
@@ -76,8 +77,16 @@ export default function App() {
     .catch((err) => console.log(`Ошибка: ${err}`));
   }
 
-  function handleUserSubmit(userData){
+  function closeAllPopups() {
+    setEditProfilePopupOpen(false);
+    setEditAvatarPopupOpen(false);
+    setAddPlacePopupOpen(false);
+    setConfirmPopupOpen(false);
+    setCardZoomPopupOpen(false);
+    setSelectedCard({});
+  }
 
+  function onUserUpdate(userData){
     api.setUserData(userData)
     .then((userData)=>{
       setCurrentUser(userData);
@@ -86,13 +95,13 @@ export default function App() {
     .catch((err) => console.log(`Ошибка: ${err}`));
   }
 
-  function closeAllPopups() {
-    setEditProfilePopupOpen(false);
-    setEditAvatarPopupOpen(false);
-    setAddPlacePopupOpen(false);
-    setConfirmPopupOpen(false);
-    setCardZoomPopupOpen(false);
-    setSelectedCard({});
+  function onAvatarUpdate(avatarLink){
+    api.changeUserAvatar(avatarLink)
+    .then((userData) =>{
+      setCurrentUser(userData);
+      closeAllPopups();
+    })
+    .catch((err) => console.log(`Ошибка: ${err}`));
   }
 
   return (
@@ -117,31 +126,9 @@ export default function App() {
 
           {/* Popups */}
           {/* edit user */}
-          <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onSubmit={handleUserSubmit}/>
+          <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onSubmit={onUserUpdate}/>
 
-        
-
-          {/* change avatar */}
-          <PopupWithForm
-            name="change-avatar"
-            title="Обновить аватар"
-            buttonSubmitName="Сохранить"
-            isOpen={isEditAvatarPopupOpen}
-            onClose={closeAllPopups}
-          >
-            <>
-              <input
-                className="popup__input popup__input_form_avatar"
-                type="url"
-                name="avatar"
-                placeholder="Ссылка на аватар"
-                id="url-input-avatar"
-                required="required"
-              />
-
-              <span className="popup__input-error url-input-avatar-error"></span>
-            </>
-          </PopupWithForm>
+          <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onSubmit={onAvatarUpdate}/>
 
           {/*  create photocard */}
           <PopupWithForm
