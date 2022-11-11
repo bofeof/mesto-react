@@ -8,7 +8,6 @@ export class API {
     return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
   }
 
-
   /** USER */
 
   /** {name, about, avatar, _id, cohort} */

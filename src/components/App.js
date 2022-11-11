@@ -8,6 +8,7 @@ import PopupConfirm from '../components/PopupConfirm';
 
 import EditProfilePopup from '../components/EditProfilePopup'
 import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
 
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
 
@@ -90,7 +91,6 @@ export default function App() {
     api.setUserData(userData)
     .then((userData)=>{
       setCurrentUser(userData);
-      closeAllPopups();
     })
     .catch((err) => console.log(`Ошибка: ${err}`));
   }
@@ -99,9 +99,17 @@ export default function App() {
     api.changeUserAvatar(avatarLink)
     .then((userData) =>{
       setCurrentUser(userData);
-      closeAllPopups();
     })
     .catch((err) => console.log(`Ошибка: ${err}`));
+  }
+
+  function onCardCreate(cardData){
+    api.addPhotoCard(cardData)
+    .then((newCard) => {
+      setCards((prevCards)=>{
+        return [newCard, ...prevCards]
+      })
+    })
   }
 
   return (
@@ -130,38 +138,9 @@ export default function App() {
 
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onSubmit={onAvatarUpdate}/>
 
-          {/*  create photocard */}
-          <PopupWithForm
-            name="create-card"
-            title="Новое место"
-            buttonSubmitName="Сохранить"
-            isOpen={isAddPlacePopupOpen}
-            onClose={closeAllPopups}
-          >
-            <>
-              <input
-                className="popup__input popup__input_form_photoname"
-                type="text"
-                name="name"
-                id="photoname-input"
-                placeholder="Название"
-                minLength="2"
-                maxLength="30"
-                required="required"
-              />
-              <span className="popup__input-error photoname-input-error"></span>
+          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onSubmit={onCardCreate}/>
 
-              <input
-                className="popup__input popup__input_form_photolink"
-                type="url"
-                name="link"
-                placeholder="Ссылка на картинку"
-                id="url-input"
-                required="required"
-              />
-              <span className="popup__input-error url-input-error"></span>
-            </>
-          </PopupWithForm>
+
 
           {/* open img card */}
           <ImagePopup card={selectedCard} isOpen={isCardZoomPopupOpen} onClose={closeAllPopups} />

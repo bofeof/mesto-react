@@ -25,7 +25,8 @@ export default function EditProfilePopup({isOpen, onClose, onSubmit}){
 
     function handleUserSubmit(evt){
         evt.preventDefault();
-        onSubmit({name: name, about: description})
+        onSubmit({name: name, about: description});
+        onClose();
     }
 
     return (

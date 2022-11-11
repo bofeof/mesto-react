@@ -13,7 +13,8 @@ export default function EditAvatarPopup({isOpen, onClose, onSubmit}){
 
     function handleAvatarSubmit(evt){
         evt.preventDefault();
-        onSubmit({avatar: avatarRef.current.value})
+        onSubmit({avatar: avatarRef.current.value});
+        onClose();
     }
 
     return (
