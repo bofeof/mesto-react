@@ -10,8 +10,8 @@ export default function PopupWithForm(props) {
               
               {/* inputs area */}
               {props.children}
-
-              <button className="popup__button popup__submit-button popup__save-button" type="submit" name="save">
+    
+              <button className={`popup__button popup__submit-button popup__save-button ${ !props.isButtonEnable ? 'popup__button_disabled': ''}`} type="submit" name="save" disabled={!props.isButtonEnable}>
                 {props.buttonSubmitName}
               </button>
               
