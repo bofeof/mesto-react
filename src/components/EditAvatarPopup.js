@@ -1,14 +1,25 @@
+import { formValidator } from '../utils/FormValidator';
 import PopupWithForm from './PopupWithForm';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 
-export default function EditAvatarPopup({ isOpen, onClose, onSubmit, buttonSubmitName}) {
+export default function EditAvatarPopup({ isOpen, onClose, onSubmit, buttonSubmitName }) {
   const currentUser = useContext(CurrentUserContext);
   const avatarRef = useRef();
 
+  /**validation sets */
+  const [avatarValidation, setAvatarValidation] = useState({ isValid: true, errorText: '' });
+  const buttonStatus = ![avatarValidation.isValid].includes(false);
+
   useEffect(() => {
     avatarRef.current.value = currentUser.avatar;
+    setAvatarValidation((params) => ({ ...params, isValid: true, errorText: '' }));
   }, [isOpen]);
+
+  function handleAvatarChange(evt) {
+    const validationResult = formValidator(evt);
+    setAvatarValidation((params) => ({ ...params, isValid: validationResult.isValid, errorText: validationResult.errorText }));
+  }
 
   function handleAvatarSubmit(evt) {
     evt.preventDefault();
@@ -24,6 +35,7 @@ export default function EditAvatarPopup({ isOpen, onClose, onSubmit, buttonSubmi
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleAvatarSubmit}
+      isButtonEnable={buttonStatus}
     >
       <>
         <input
@@ -34,9 +46,10 @@ export default function EditAvatarPopup({ isOpen, onClose, onSubmit, buttonSubmi
           id="url-input-avatar"
           required="required"
           ref={avatarRef}
+          onChange={handleAvatarChange}
         />
 
-        <span className="popup__input-error url-input-avatar-error"></span>
+        <span className="popup__input-error url-input-avatar-error">{avatarValidation.errorText}</span>
       </>
     </PopupWithForm>
   );

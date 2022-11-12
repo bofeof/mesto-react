@@ -16,7 +16,6 @@ import { configAPI } from '../utils/constants.js';
 import { useEffect, useState } from 'react';
 
 export default function App() {
-
   const api = new API(configAPI);
 
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -73,13 +72,13 @@ export default function App() {
   }
 
   // before removing card
-  function handleAskConfirmationClick(card){
-    setCardForRemove(card)
+  function handleAskConfirmationClick(card) {
+    setCardForRemove(card);
     setConfirmPopupOpen(true);
   }
 
   function onCardRemove() {
-    setBtnTextConfirm(()=> 'Удаление...')
+    setBtnTextConfirm(() => 'Удаление...');
     api
       .removePhotoCard(cardForRemove._id)
       .then(() => {
@@ -97,18 +96,18 @@ export default function App() {
     setCardZoomPopupOpen(false);
 
     setSelectedCard({});
-    setCardForRemove({})
+    setCardForRemove({});
   }
 
   function onUserUpdate(userData) {
-    setBtnTextUserSubmit(()=> 'Сохранение...');
+    setBtnTextUserSubmit(() => 'Сохранение...');
     api
       .setUserData(userData)
       .then((userData) => {
         setCurrentUser(userData);
       })
       .catch((err) => console.log(`Ошибка: ${err}`))
-      .finally(() => setBtnTextUserSubmit(()=>'Cохранить'));
+      .finally(() => setBtnTextUserSubmit(() => 'Cохранить'));
   }
 
   function onAvatarUpdate(avatarLink) {
@@ -119,17 +118,21 @@ export default function App() {
         setCurrentUser(userData);
       })
       .catch((err) => console.log(`Ошибка: ${err}`))
-      .finally(() => setBtnTextAvatarSubmit(()=>'Cохранить'));
+      .finally(() => setBtnTextAvatarSubmit(() => 'Cохранить'));
   }
 
   function onCardCreate(cardData) {
-    setBtnTextCardSubmit(()=>{return 'Создание...'});
-    api.addPhotoCard(cardData).then((newCard) => {
-      setCards((prevCards) => {
-        return [newCard, ...prevCards];
-      });
-    })
-    .finally(() => setBtnTextCardSubmit(() => 'Создать'));
+    setBtnTextCardSubmit(() => {
+      return 'Создание...';
+    });
+    api
+      .addPhotoCard(cardData)
+      .then((newCard) => {
+        setCards((prevCards) => {
+          return [newCard, ...prevCards];
+        });
+      })
+      .finally(() => setBtnTextCardSubmit(() => 'Создать'));
   }
 
   return (
@@ -144,9 +147,7 @@ export default function App() {
             onEditAvatar={handleEditAvatarClick}
             onCardClick={handleCardClick}
             onCardLike={handleCardLike}
-
             onCardDelete={handleAskConfirmationClick}
-
             onClose={closeAllPopups}
             cards={cards}
             card={selectedCard}
@@ -160,7 +161,14 @@ export default function App() {
 
           <ImagePopup card={selectedCard} isOpen={isCardZoomPopupOpen} onClose={closeAllPopups} />
 
-          <PopupConfirm title="Вы уверены?" buttonConfirmName={btnTextConfirm} isOpen={isConfirmPopupOpen} onClose={closeAllPopups} onConfirm={onCardRemove} card={cardForRemove}/>
+          <PopupConfirm
+            title="Вы уверены?"
+            buttonConfirmName={btnTextConfirm}
+            isOpen={isConfirmPopupOpen}
+            onClose={closeAllPopups}
+            onConfirm={onCardRemove}
+            card={cardForRemove}
+          />
 
           <Footer />
         </div>

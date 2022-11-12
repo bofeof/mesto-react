@@ -1,16 +1,13 @@
 import React from 'react';
 import userEditInfoIcon from '../images/edit/edit-avatar.png';
-import defaultUserAvatar from '../images/avatar.jpg'
-import {CurrentUserContext}  from '../contexts/CurrentUserContext';
+import defaultUserAvatar from '../images/avatar.jpg';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import Card from './Card';
 
-
 export default function Main(props) {
-
   const currentUser = React.useContext(CurrentUserContext);
 
   return (
-
     <main className="content">
       <section className="user">
         <div className="user__avatar-container user__avatar-editor" onClick={props.onEditAvatar}>
@@ -35,18 +32,11 @@ export default function Main(props) {
         <ul className="gallery">
           {props.cards.map((card) => {
             return (
-              <Card
-                key={card._id}
-                card={card}
-                onCardClick={props.onCardClick}
-                onCardLike={props.onCardLike}
-                onCardDelete={props.onCardDelete}
-              />
+              <Card key={card._id} card={card} onCardClick={props.onCardClick} onCardLike={props.onCardLike} onCardDelete={props.onCardDelete} />
             );
           })}
         </ul>
       </section>
     </main>
-    
   );
 }

@@ -1,22 +1,33 @@
+import { formValidator } from '../utils/FormValidator';
 import PopupWithForm from './PopupWithForm';
 import React, { useEffect, useState } from 'react';
 
-export default function AddPlacePopup({ isOpen, onClose, onSubmit, buttonSubmitName}) {
-  
+export default function AddPlacePopup({ isOpen, onClose, onSubmit, buttonSubmitName }) {
   const [cardName, setCardName] = useState('');
   const [cardLink, setCardLink] = useState('');
+
+  /**validation sets */
+  const [nameValidation, setNameValidation] = useState({ isValid: false, errorText: '' });
+  const [linkValidation, setLinkValidation] = useState({ isValid: false, errorText: '' });
+  const buttonStatus = ![nameValidation.isValid, linkValidation.isValid].includes(false);
 
   useEffect(() => {
     setCardName('');
     setCardLink('');
+    setNameValidation((params) => ({ ...params, isValid: false, errorText: '' }));
+    setLinkValidation((params) => ({ ...params, isValid: false, errorText: '' }));
   }, [isOpen]);
 
   function handleCardChange(evt) {
     const value = evt.target.value;
+    const validationResult = formValidator(evt);
+
     if (evt.target.name === 'name') {
       setCardName(value);
+      setNameValidation((params) => ({ ...params, isValid: validationResult.isValid, errorText: validationResult.errorText }));
     } else {
       setCardLink(value);
+      setLinkValidation((params) => ({ ...params, isValid: validationResult.isValid, errorText: validationResult.errorText }));
     }
   }
 
@@ -34,6 +45,7 @@ export default function AddPlacePopup({ isOpen, onClose, onSubmit, buttonSubmitN
       isOpen={isOpen}
       onClose={onClose}
       onSubmit={handleCardSubmit}
+      isButtonEnable={buttonStatus}
     >
       <>
         <input
@@ -48,7 +60,7 @@ export default function AddPlacePopup({ isOpen, onClose, onSubmit, buttonSubmitN
           value={cardName}
           onChange={handleCardChange}
         />
-        <span className="popup__input-error photoname-input-error"></span>
+        <span className="popup__input-error photoname-input-error">{nameValidation.errorText}</span>
 
         <input
           className="popup__input popup__input_form_photolink"
@@ -60,7 +72,7 @@ export default function AddPlacePopup({ isOpen, onClose, onSubmit, buttonSubmitN
           value={cardLink}
           onChange={handleCardChange}
         />
-        <span className="popup__input-error url-input-error"></span>
+        <span className="popup__input-error url-input-error">{linkValidation.errorText}</span>
       </>
     </PopupWithForm>
   );
