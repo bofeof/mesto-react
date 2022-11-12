@@ -1,7 +1,7 @@
 
 # ✨ Mesto ✨
 
-[Mesto](https://bofeof.github.io/mesto-react/) is a type of Instagram prototype. This project is developed to practice programming skills: Adaptive design, ES6, OOP, DOM, API, Promises, Webpack, React.
+[Mesto](https://bofeof.github.io/mesto-react/) is a type of Instagram prototype. This project is developed to practice programming skills: Adaptive design, ES6, DOM, API, Promises, Webpack, React.
 
 Click this [link](https://bofeof.github.io/mesto-react/) to check it out.
 
@@ -12,7 +12,9 @@ Click this [link](https://bofeof.github.io/mesto-react/) to check it out.
 * Create new photocards;
 * Zoom photocards;
 * Toggle like;
-* Remove cards.
+* Remove card and confirmation window for this action;
+* Forms validator, submit-button control.
+
 
 ## Technologies:
 
