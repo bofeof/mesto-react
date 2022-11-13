@@ -1,4 +1,4 @@
-import { formValidator } from '../utils/FormValidator';
+import { formValidator } from '../utils/formValidator';
 import PopupWithForm from './PopupWithForm';
 import React, { useEffect, useState } from 'react';
 

@@ -5,10 +5,9 @@ export function formValidator(evt) {
       errorText: currentInput.validationMessage,
     };
   
-    if (!currentInput.validity.valid) {
-      validationStatus.isValid = false;
-    } else {
+    if (currentInput.validity.valid) {
       validationStatus.isValid = true;
     }
+    
     return validationStatus;
   }  

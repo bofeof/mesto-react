@@ -132,47 +132,47 @@ export default function App() {
           return [newCard, ...prevCards];
         });
       })
+      .catch((err) => console.log(`Ошибка: ${err}`))
       .finally(() => setBtnTextCardSubmit(() => 'Создать'));
   }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <>
-        <div className="page page-content">
-          <Header />
+      <div className="page page-content">
+        <Header />
 
-          <Main
-            onEditProfile={handleEditProfileClick}
-            onAddPlace={handleAddPlaceClick}
-            onEditAvatar={handleEditAvatarClick}
-            onCardClick={handleCardClick}
-            onCardLike={handleCardLike}
-            onCardDelete={handleAskConfirmationClick}
-            onClose={closeAllPopups}
-            cards={cards}
-            card={selectedCard}
-          />
+        <Main
+          onEditProfile={handleEditProfileClick}
+          onAddPlace={handleAddPlaceClick}
+          onEditAvatar={handleEditAvatarClick}
+          onCardClick={handleCardClick}
+          onCardLike={handleCardLike}
+          onCardDelete={handleAskConfirmationClick}
+          onClose={closeAllPopups}
+          cards={cards}
+          card={selectedCard}
+        />
 
-          <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onSubmit={onUserUpdate} buttonSubmitName={btnTextUserSubmit} />
+        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onSubmit={onUserUpdate} buttonSubmitName={btnTextUserSubmit} />
 
-          <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onSubmit={onAvatarUpdate} buttonSubmitName={btnTextAvatarSubmit} />
+        <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onSubmit={onAvatarUpdate} buttonSubmitName={btnTextAvatarSubmit} />
 
-          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onSubmit={onCardCreate} buttonSubmitName={btnTextCardSubmit} />
+        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onSubmit={onCardCreate} buttonSubmitName={btnTextCardSubmit} />
 
-          <ImagePopup card={selectedCard} isOpen={isCardZoomPopupOpen} onClose={closeAllPopups} />
+        <ImagePopup card={selectedCard} isOpen={isCardZoomPopupOpen} onClose={closeAllPopups} />
 
-          <PopupConfirm
-            title="Вы уверены?"
-            buttonConfirmName={btnTextConfirm}
-            isOpen={isConfirmPopupOpen}
-            onClose={closeAllPopups}
-            onConfirm={onCardRemove}
-            card={cardForRemove}
-          />
+        <PopupConfirm
+          title="Вы уверены?"
+          buttonConfirmName={btnTextConfirm}
+          isOpen={isConfirmPopupOpen}
+          onClose={closeAllPopups}
+          onConfirm={onCardRemove}
+          card={cardForRemove}
+        />
 
-          <Footer />
-        </div>
-      </>
+        <Footer />
+      </div>
+      
     </CurrentUserContext.Provider>
   );
 }
